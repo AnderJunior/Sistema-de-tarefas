@@ -7,24 +7,23 @@ import {
   TextInput,
   TouchableOpacity,
   FlatList,
+  Image,
 } from 'react-native';
+import Feather from 'react-native-vector-icons/Feather';
 
 import Login from './src/components/Login';
 import TaskList from './src/components/TaskList';
 
 export default function App() {
   const [user, setUser] = useState(null);
-  const [tasks, setTasks] = useState([
-    { key: 1, nome: 'Comprar Coca Cola' },
-    { key: 2, nome: 'Estudar JavaScript' },
-  ]);
+  const [tasks, setTasks] = useState([]);
 
   const [newTask, setNewTask] = useState('');
 
   //Função para deletar a tarefa
   function handleDelete(key) {
-    const finTasks = tasks.filter( item => item.key !== key)
-    setTasks(finTasks)
+    const finTasks = tasks.filter((item) => item.key !== key);
+    setTasks(finTasks);
   }
 
   //Função para adicionar alguma tarefa
@@ -33,21 +32,46 @@ export default function App() {
       return;
     }
     const keyIndex = tasks.length + 1; //Falo que a key é igual ao tamnho da array + 1
-    setTasks(oldTasks => [...oldTasks, { key: keyIndex, nome: newTask }]); //Adiciono ele aqui
-
+    setTasks((oldTasks) => [...oldTasks, { key: keyIndex, nome: newTask }]); //Adiciono ele aqui
+    setNewTask(''); //Apagar o input depois que apertar no +
   }
 
-  // função para clicar na tabela
+  // Função para clicar na tabela
   function handleEdit(data) {
     console.log('ITEM CLICADO', data);
   }
 
-  if (!user) { //Puxa a função de login 
-    return <Login data={setUser}/>;
+  // Função para voltar para o login
+  function handleVoltar(){
+    setUser(null);
+    setNewTask('');
+  }
+
+  if (!user) {
+    //Puxa a função de login
+    return <Login data={setUser} />;
   }
 
   return (
     <SafeAreaView style={styles.container}>
+    
+      <TouchableOpacity style={styles.buttonVoltar} onPress={handleVoltar}>
+        <Feather name="arrow-left" color="#000" size={40}/>
+      </TouchableOpacity>
+
+
+      <View style={styles.areaHeader}>
+        <Image
+          style={{ width: 60, height: 60 }}
+          source={require('./src/assets/logoAnalise.png')}
+        />
+
+        <View style={styles.areaTextEmpresa}>
+          <Text style={styles.textEmpresa}>Analis</Text>
+          <Text style={styles.textEmpresa2}>Code</Text>
+        </View>
+      </View>
+
       <View style={styles.containerTask}>
         <TextInput
           style={styles.input}
@@ -60,7 +84,6 @@ export default function App() {
           <Text style={styles.buttonText}>+</Text>
         </TouchableOpacity>
       </View>
-
       <FlatList
         showsVerticalScrollIndicator={false}
         data={tasks}
@@ -73,6 +96,7 @@ export default function App() {
           />
         )}
       />
+
     </SafeAreaView>
   );
 }
@@ -80,7 +104,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 50,
+    paddingTop: 100,
     paddingHorizontal: 10,
     backgroundColor: '#f2f6fc',
   },
@@ -110,4 +134,30 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 22,
   },
+  areaHeader: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: -70,
+    padding: 10,
+  },
+  areaTextEmpresa: {
+    flexDirection: 'row',
+    padding: 10,
+  },
+  textEmpresa2: {
+    color: '#000',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  textEmpresa: {
+    color: '#ff0000',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  buttonVoltar:{
+    marginLeft: 10,
+    width: 40,
+    height: 40,
+    marginTop: -30
+  }
 });
